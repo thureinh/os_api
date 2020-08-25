@@ -17,7 +17,7 @@ class SubcategoryController extends Controller
     {
         //
         $subcategories = Brand::all();
-        return $subcategories;
+        return response()->json($subcategories);
     }
 
     /**
