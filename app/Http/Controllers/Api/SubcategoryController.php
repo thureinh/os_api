@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Subcategory;
 use Illuminate\Http\Request;
+use App\Http\Resources\SubcategoryResource;
 
 class SubcategoryController extends Controller
 {
@@ -17,7 +18,7 @@ class SubcategoryController extends Controller
     {
         //
         $subcategories = Subcategory::all();
-        return response()->json($subcategories);
+        return response()->json(SubcategoryResource::collection($subcategories));
     }
 
     /**
@@ -28,7 +29,26 @@ class SubcategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $messages = [
+            'name.required' => '* Please enter Category Name.',
+            'name.min' => 'Category Name should be 3 letters and more.',
+            'category_id.required' => '* Please choose Item Category.',
+            'category_id.numeric' => '* Please choose Item Category.'
+        ];
+
+        $validatedData = $request->validate([
+            'name' => 'required|min:3',
+            'category_id' => 'required|numeric'
+        ], $messages);
+
+        $subcategory = new Subcategory;
+        $subcategory->name = $request->name;
+        $subcategory->category_id = $request->category_id;
+
+        $subcategory->save();
+
+        // redirect
+        return new SubcategoryResource($subcategory);
     }
 
     /**
@@ -39,7 +59,7 @@ class SubcategoryController extends Controller
      */
     public function show(Subcategory $subcategory)
     {
-        //
+        return response()->json(new SubcategoryResource($subcategory));
     }
 
     /**

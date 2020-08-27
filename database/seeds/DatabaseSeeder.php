@@ -4,6 +4,7 @@ use Illuminate\Database\Seeder;
 use App\Category;
 use App\Subcategory;
 use App\Brand;
+use App\Item;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,14 +15,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UserSeeder::class);
-
-        //Category and Subcategory Seeder
-        factory(Category::class, 10)->create()->each(function ($category) {
-        	$subcategories = factory(Subcategory::class, 2)->make();
-        	$category->subcategories()->saveMany($subcategories);
-        });
-        //Brand Seeder
-        factory(Brand::class, 10)->create();
+        factory(App\Item::class, 3)->create();
     }
 }

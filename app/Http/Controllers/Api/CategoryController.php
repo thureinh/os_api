@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Category;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Resources\CategoryResource;
 
 class CategoryController extends Controller
 {
@@ -17,7 +18,7 @@ class CategoryController extends Controller
     {
         //
         $categories = Category::all();
-        return response()->json($categories);
+        return response()->json(CategoryResource::collection($categories));
     }
 
     /**
@@ -28,7 +29,30 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $messages = [
+            'name.required' => '* Please enter Category Name.',
+            'name.min' => 'Category Name should be 3 letters and more.',
+            'photo.required' => '* Please choose Category Photo.',
+            'photo.image' => 'Please choose image file type.'
+        ];
+        $validatedData = $request->validate([
+            'name' => 'required|min:3',
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg'
+        ], $messages);
+
+        // file upload
+        $photoName = time().'.'.$request->photo->extension();  
+        $request->photo->move(public_path('backend_template/category_img/'), $photoName);
+        $filePath = 'backend_template/category_img/'.$photoName;
+
+        $category = new Category;
+        $category->name = $request->name;
+        $category->photo = $filePath;
+
+        $category->save();
+
+        // redirect
+        return new CategoryResource($category);
     }
 
     /**
@@ -39,7 +63,7 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        //
+        return response()->json(new CategoryResource($category));
     }
 
     /**
