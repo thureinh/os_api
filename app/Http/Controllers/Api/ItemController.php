@@ -126,27 +126,39 @@ class ItemController extends Controller
     public function filter(Request $request)
     {
         $query = $request->query();
-        $items = Item::all();
-        $results = collect([]);
+        $results = Item::all();
+        $found = true;
         foreach ($query as $key => $value) {
             # code...
-            if($key == "subcategory")
+            if($key == "item")
+            {   
+                $items = Item::where('name', 'like', '%' . $value . '%')
+                               ->get()->map(function ($item){ return $item->id; });
+                if(count($items) > 0)
+                    $results = $results->whereIn('id', $items);
+                else $found = false;
+            }
+            elseif($key == "subcategory")
             {
-                $subcategory = Subcategory::where('name', 'Like', '%' . $value . '%')->get();
-                if(count($subcategory) > 0)
-                    $results = $items->where('subcategory_id', $subcategory[0]->id);
+                $subcategories = Subcategory::where('name', 'like', '%' . $value . '%')
+                               ->get()->map(function ($subcategory){ return $subcategory->id; });
+                if(count($subcategories) > 0)
+                    $results = $results->whereIn('subcategory_id', $subcategories);
+                else $found = false;
             }
             elseif($key == "brand")
             {
-                $brand = Brand::where('name', 'Like', '%' . $value . '%')->get();
-                if(count($brand) > 0)
-                    $results = $items->where('brand_id', $brand[0]->id);
+                $brands = Brand::where('name', 'like', '%' . $value . '%')
+                         ->get()->map(function ($brand){ return $brand->id; });
+                if(count($brands) > 0)
+                    $results = $results->whereIn('brand_id', $brands);
+                else $found = false;
             }
         }
         return response()->json([
             "status" => "ok",
-            "totalResults" => count($results),
-            "items" => ItemResource::collection($results),
+            "totalResults" => (!$found) ? 0 : count($results),
+            "items" => (!$found) ? ["Item Not Found"] : ItemResource::collection($results),
         ]);
     }
 }

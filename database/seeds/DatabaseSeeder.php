@@ -1,10 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Category;
-use App\Subcategory;
-use App\Brand;
-use App\Item;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,6 +11,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Item::class, 3)->create();
+    	factory(App\Category::class, 5)->create();
+    	factory(App\Subcategory::class, 10)->create();
+    	factory(App\Brand::class, 5)->create();
+        factory(App\Item::class, 30)->create();
     }
 }

@@ -10,6 +10,6 @@ use Faker\Generator as Faker;
 $factory->define(Subcategory::class, function (Faker $faker) {
 		return [
     	'name' => $faker->colorName,
-    	'category_id' => factory(App\Category::class),
+    	'category_id' => App\Category::all()->random()->id,
     ];
 });

@@ -18,7 +18,7 @@ $factory->define(Item::class, function (Faker $faker) {
     	'price' => $faker->numberBetween(1000, 50000),
     	'discount' => $faker->numberBetween(0, 50),
     	'description' => $faker->text(200),
-    	'subcategory_id' => factory(App\Subcategory::class),
-    	'brand_id' => factory(App\Brand::class),
+    	'subcategory_id' => App\Subcategory::all()->random()->id,
+    	'brand_id' => App\Brand::all()->random()->id,
     ];
 });
