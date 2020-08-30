@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Item;
+use App\Subcategory;
+use App\Brand;
 use App\Http\Resources\ItemResource;
 use Illuminate\Http\Request;
 
@@ -12,7 +14,7 @@ class ItemController extends Controller
 
     public function __construct($value='')
     {
-        $this->middleware('auth:api')->except('index');
+        $this->middleware('auth:api')->except('index', 'filter');
     }
     /**
      * Display a listing of the resource.
@@ -120,5 +122,31 @@ class ItemController extends Controller
     public function destroy(Item $item)
     {
         //
+    }
+    public function filter(Request $request)
+    {
+        $query = $request->query();
+        $items = Item::all();
+        $results = collect([]);
+        foreach ($query as $key => $value) {
+            # code...
+            if($key == "subcategory")
+            {
+                $subcategory = Subcategory::where('name', 'Like', '%' . $value . '%')->get();
+                if(count($subcategory) > 0)
+                    $results = $items->where('subcategory_id', $subcategory[0]->id);
+            }
+            elseif($key == "brand")
+            {
+                $brand = Brand::where('name', 'Like', '%' . $value . '%')->get();
+                if(count($brand) > 0)
+                    $results = $items->where('brand_id', $brand[0]->id);
+            }
+        }
+        return response()->json([
+            "status" => "ok",
+            "totalResults" => count($results),
+            "items" => ItemResource::collection($results),
+        ]);
     }
 }
