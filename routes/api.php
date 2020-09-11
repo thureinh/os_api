@@ -24,3 +24,4 @@ Route::apiresource('subcategories', 'Api\SubcategoryController');
 Route::get('items/filter', 'Api\ItemController@filter');
 Route::apiresource('items', 'Api\ItemController');
 Route::apiresource('users', 'Api\UserController');
+Route::apiresource('orders', 'Api\OrderController');

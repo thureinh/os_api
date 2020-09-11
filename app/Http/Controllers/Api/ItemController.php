@@ -14,7 +14,7 @@ class ItemController extends Controller
 
     public function __construct($value='')
     {
-        $this->middleware('auth:api')->except('index', 'filter');
+        $this->middleware('auth:api')->except('index', 'show', 'filter');
     }
     /**
      * Display a listing of the resource.
@@ -99,6 +99,7 @@ class ItemController extends Controller
     public function show(Item $item)
     {
         //
+        return new ItemResource($item);
     }
 
     /**
