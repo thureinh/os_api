@@ -7,6 +7,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -72,5 +73,26 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         //
+    }
+
+    public function register(Request $request)
+    {
+        $validator = Validator::make($request->input(), [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        if($validator->fails()) {
+            return json_encode(['errors' => $validator->errors()]);
+        }
+        else{
+            $user = User::create([
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'password' => Hash::make($request->input('password')),
+            ]);
+            return json_encode(['user' => $user]);
+        }
     }
 }

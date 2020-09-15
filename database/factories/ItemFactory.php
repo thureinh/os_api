@@ -8,7 +8,6 @@ use App\Brand;
 use Faker\Generator as Faker;
 
 $factory->define(Item::class, function (Faker $faker) {
-
 	$image = $faker->image('public/backend_template/item_img', 200, 150, 'sports');
 	$filepath = substr($image, 7);  
 		return [

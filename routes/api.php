@@ -18,10 +18,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiresource('brands', 'Api\BrandController');
-Route::apiresource('categories', 'Api\CategoryController');
-Route::apiresource('subcategories', 'Api\SubcategoryController');
-Route::get('items/filter', 'Api\ItemController@filter');
-Route::apiresource('items', 'Api\ItemController');
-Route::apiresource('users', 'Api\UserController');
-Route::apiresource('orders', 'Api\OrderController');
+Route::prefix('v1')->group(function () {
+	Route::apiresource('brands', 'Api\BrandController');
+	Route::apiresource('categories', 'Api\CategoryController');
+	Route::apiresource('subcategories', 'Api\SubcategoryController');
+	Route::get('items/filter', 'Api\ItemController@filter');
+	Route::apiresource('items', 'Api\ItemController');
+	Route::post('register', 'Api\UserController@register');
+	Route::apiresource('users', 'Api\UserController');
+	Route::apiresource('orders', 'Api\OrderController');
+});

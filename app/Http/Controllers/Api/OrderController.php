@@ -51,7 +51,7 @@ class OrderController extends Controller
         $order->voucherno = $generator->generateKey(4);
         $order->total = $total_price;
         $order->status = 0;
-        $order->user_id = 1;
+        $order->user_id = $request->input('user');
         $order->save();
         foreach ($request->input('items') as $item) {
             # code...
